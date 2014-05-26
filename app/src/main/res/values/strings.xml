@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tout Doux</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_sort">Trier</string>
+    <string name="ok">Valider</string>
+    <string name="cancel">Annuler</string>
+
+</resources>
