@@ -2,6 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="tout.doux.app.MainActivity" >
 
+    <item android:id="@+id/action_clear"
+        android:title="@string/action_clear"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+
     <item android:id="@+id/action_sort"
         android:title="@string/action_sort"
         android:orderInCategory="100"

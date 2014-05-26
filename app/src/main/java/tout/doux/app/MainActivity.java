@@ -29,14 +29,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
+import tout.doux.app.comparator.ComparatorByAlphabeticalOrder;
 import tout.doux.app.model.StorageHelper;
 import tout.doux.app.model.Todo;
 
 public class MainActivity extends Activity {
     StorageHelper helper;
     Todo t;
+    public TodoAdapter adapter;
+    public static List<Todo> todoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,15 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sort) {
+            //on utilise un comparator pour trier la liste
+            Collections.sort(todoList, new ComparatorByAlphabeticalOrder());
+
+            return true;
+        }else if(id == R.id.action_clear){
+            //on clear la liste
+            todoList.clear();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -179,8 +191,8 @@ public class MainActivity extends Activity {
 
         StorageHelper helper;
         ArrayList<String> dataList;
-        List<Todo> todoList;
-        TodoAdapter adapter;
+
+
         EditText ed;
 
         public PlaceholderFragment() {
@@ -196,6 +208,10 @@ public class MainActivity extends Activity {
 
             ed = (EditText) rootView.findViewById(R.id.editText);
             Button btn_add = (Button) rootView.findViewById(R.id.ok_button  );
+
+
+
+
             final ListView listView = (ListView) rootView.findViewById(R.id.listView);
             final Activity act = this.getActivity();
 
@@ -218,6 +234,9 @@ public class MainActivity extends Activity {
                     data.add(title);
                     adapter.insert(t);
                     helper.addTodo(title, content);
+
+
+
                     reloadData();
 
 
@@ -244,8 +263,6 @@ public class MainActivity extends Activity {
 
 
             });
-
-
 
 
             return rootView;

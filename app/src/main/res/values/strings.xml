@@ -5,6 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_sort">Trier</string>
+    <string name="action_clear">Vider</string>
     <string name="ok">Valider</string>
     <string name="cancel">Annuler</string>
 
