@@ -154,6 +154,7 @@ public class MainActivity extends Activity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                                 //helper.deleteTodo(t);
+                                reloadData();
                             }
                         })
                         .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
@@ -174,6 +175,7 @@ public class MainActivity extends Activity {
                                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                                 Log.d("delete_Menu",t.todo_id+" - "+t.getTitle());
                                 helper.deleteTodo(t);
+                                reloadData();
                             }
                         })
                         .show();
@@ -186,9 +188,16 @@ public class MainActivity extends Activity {
         {
             return true;
         }
+
     }
 
+    public static void reloadData() {
 
+        todoList.clear();
+        todoList.addAll(helper.getAll());
+        adapter.notifyDataSetChanged();
+
+    }
 
 
 /**
@@ -237,6 +246,7 @@ public class MainActivity extends Activity {
                     adapter.insert(t);
                     helper.addTodo(title, content);
                     reloadData();
+                    ed.setText("");
                 }
             });
 
@@ -265,15 +275,6 @@ public class MainActivity extends Activity {
             return rootView;
         }
 
-        public void reloadData() {
 
-            todoList.clear();
-
-            todoList = helper.getAll();
-            Log.d("adapter_reload","test");
-            adapter.notifyDataSetChanged();
-            Log.d("adapter_reload","testOK");
-            ed.setText("");
-        }
     }
 }
