@@ -152,6 +152,7 @@ public class StorageHelper extends SQLiteOpenHelper {
     }*/
 
     public void deleteTodo(Todo todo) {
+        Log.d("delete_BDD",todo.todo_id + " - "+todo.getTitle());
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("Todo", "todo_id" + " = ?",
                 new String[] { String.valueOf(todo.todo_id) });

@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,14 +38,16 @@ import tout.doux.app.model.StorageHelper;
 import tout.doux.app.model.Todo;
 
 public class MainActivity extends Activity {
-    StorageHelper helper;
+    public static StorageHelper helper;
     Todo t;
-    public TodoAdapter adapter;
     public static List<Todo> todoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+        helper = new StorageHelper(this);
+        todoList = helper.getAll();
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
@@ -166,6 +169,7 @@ public class MainActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                                Log.d("delete_Menu",t.todo_id+" - "+t.getTitle());
                                 helper.deleteTodo(t);
                             }
                         })
@@ -189,13 +193,17 @@ public class MainActivity extends Activity {
          */
     public static class PlaceholderFragment extends Fragment {
 
-        StorageHelper helper;
         ArrayList<String> dataList;
-
+        private final TodoAdapter adapter;
 
         EditText ed;
 
         public PlaceholderFragment() {
+            helper = new StorageHelper(this.getActivity());
+
+            adapter = new TodoAdapter(this.getActivity(),
+                    todoList);
+
         }
 
         @Override
@@ -203,24 +211,16 @@ public class MainActivity extends Activity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-            helper = new StorageHelper(this.getActivity());
-
             ed = (EditText) rootView.findViewById(R.id.editText);
             Button btn_add = (Button) rootView.findViewById(R.id.ok_button  );
-
-
 
 
             final ListView listView = (ListView) rootView.findViewById(R.id.listView);
             final Activity act = this.getActivity();
 
-            todoList = helper.getAll();
+
             dataList = new ArrayList<String>();
 
-            final TodoAdapter adapter =
-                    new TodoAdapter(this.getActivity(),
-                            todoList);
             listView.setAdapter(adapter);
             registerForContextMenu(listView);
 
@@ -234,12 +234,7 @@ public class MainActivity extends Activity {
                     data.add(title);
                     adapter.insert(t);
                     helper.addTodo(title, content);
-
-
-
                     reloadData();
-
-
                 }
             });
 
@@ -273,7 +268,9 @@ public class MainActivity extends Activity {
             todoList.clear();
 
             todoList = helper.getAll();
-
+            Log.d("adapter_reload","test");
+            adapter.notifyDataSetChanged();
+            Log.d("adapter_reload","testOK");
             ed.setText("");
         }
     }
