@@ -53,6 +53,7 @@ public class StorageHelper extends SQLiteOpenHelper {
 
     public StorageHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
     }
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_UP_0);

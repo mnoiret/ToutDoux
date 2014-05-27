@@ -41,13 +41,16 @@ public class MainActivity extends Activity {
     public static StorageHelper helper;
     Todo t;
     public static List<Todo> todoList;
-
+    public static TodoAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Crashlytics.start(this);
         helper = new StorageHelper(this);
         todoList = helper.getAll();
+        adapter = new TodoAdapter(this,
+                todoList);
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
@@ -194,21 +197,20 @@ public class MainActivity extends Activity {
     public static class PlaceholderFragment extends Fragment {
 
         ArrayList<String> dataList;
-        private final TodoAdapter adapter;
 
         EditText ed;
 
         public PlaceholderFragment() {
-            helper = new StorageHelper(this.getActivity());
-
-            adapter = new TodoAdapter(this.getActivity(),
-                    todoList);
 
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
+
+
+
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             ed = (EditText) rootView.findViewById(R.id.editText);

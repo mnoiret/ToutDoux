@@ -22,7 +22,7 @@ public class TodoAdapter extends BaseAdapter {
     Context context;
 
     public TodoAdapter(Context _context, List<Todo> _data) {
-        Log.d("adapter_constructor", "test");
+
         context = _context;
         data    = _data;
 
@@ -59,8 +59,11 @@ public class TodoAdapter extends BaseAdapter {
 
         if(convertView == null) {
             if(context == null){
-                Crashlytics.log(1,"context","context est null");
-                Log.d("context","context est null");
+                Crashlytics.log(1,"context2","context est null");
+                Log.d("context2","context est null");
+            }else{
+                Crashlytics.log(1,"context2","context n'est pas null");
+                Log.d("context2","context n'est pas null");
             }
 
             LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
