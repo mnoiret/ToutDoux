@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
@@ -58,8 +59,9 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
+        //getMenuInflater().inflate(R.menu.bar,menu );
         getMenuInflater().inflate(R.menu.sort, menu);
         return true;
     }
@@ -76,8 +78,6 @@ public class MainActivity extends Activity {
 
             return true;
         }else if(id == R.id.action_clear){
-            //on clear la liste
-            todoList.clear();
 
             return true;
         }
@@ -141,13 +141,18 @@ public class MainActivity extends Activity {
         {
             if(item.getTitle()=="Edit")
             {
+                // Use an EditText view to get user input.
+                final EditText input = new EditText(this);
+                input.setId(1);
+                input.setText(t.getTitle());
                 new AlertDialog.Builder(this).setTitle("Confirmer Suppression")
-                        .setMessage("Etes-vous sur de vouloir supprimer cet élément ?")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        .setView(input)
+                        .setPositiveButton("Enregistrer", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                                //helper.deleteTodo(t);
+                                t.setTitle(input.getText().toString());
+                                //helper.updateTodo(t);
                             }
                         })
                         .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
@@ -155,18 +160,18 @@ public class MainActivity extends Activity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
                             }
-                       })
+                        })
                         .show();
             }
             else if(item.getTitle()=="Suppr")
             {
-                new AlertDialog.Builder(this).setTitle("Confirmer Suppression")
+                new AlertDialog.Builder(this).setTitle("Modifier l'élément")
                         .setMessage("Etes-vous sur de vouloir supprimer cet élément ?")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                                helper.deleteTodo(t);
+                                //helper.deleteTodo(t);
                             }
                         })
                         .show();
@@ -184,9 +189,9 @@ public class MainActivity extends Activity {
 
 
 
-/**
-         * A placeholder fragment containing a simple view.
-         */
+    /**
+     * A placeholder fragment containing a simple view.
+     */
     public static class PlaceholderFragment extends Fragment {
 
         StorageHelper helper;
@@ -200,7 +205,7 @@ public class MainActivity extends Activity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
 
@@ -208,8 +213,6 @@ public class MainActivity extends Activity {
 
             ed = (EditText) rootView.findViewById(R.id.editText);
             Button btn_add = (Button) rootView.findViewById(R.id.ok_button  );
-
-
 
 
             final ListView listView = (ListView) rootView.findViewById(R.id.listView);
@@ -235,9 +238,8 @@ public class MainActivity extends Activity {
                     adapter.insert(t);
                     helper.addTodo(title, content);
 
-
-
                     reloadData();
+                    adapter.notifyDataSetChanged();
 
 
                 }
@@ -257,6 +259,7 @@ public class MainActivity extends Activity {
                     else{
                         t.setDone(true);
                         tv.setTextColor(Color.RED);
+                        //tv.setPaintFlags();
                     }
 
                 }
@@ -270,10 +273,7 @@ public class MainActivity extends Activity {
 
         public void reloadData() {
 
-            todoList.clear();
-
             todoList = helper.getAll();
-
             ed.setText("");
         }
     }

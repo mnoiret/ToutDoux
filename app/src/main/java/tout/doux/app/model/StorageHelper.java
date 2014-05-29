@@ -129,6 +129,27 @@ public class StorageHelper extends SQLiteOpenHelper {
         return todoList;
     }
 
+
+    public List<Todo> getAllAlphabetical() {
+        List<Todo> todoList = new ArrayList<Todo>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM Todo ORDER BY title ASC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Todo todo = new Todo(Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1), cursor.getString(2),Boolean.parseBoolean(cursor.getString(3)));
+
+                todoList.add(todo);
+            } while (cursor.moveToNext());
+        }
+
+        return todoList;
+    }
+
     public int count() {
         String countQuery = "SELECT  * FROM Todo";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -138,7 +159,7 @@ public class StorageHelper extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    /*public int updateTodo(Todo todo) {
+    public int updateTodo(Todo todo) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -149,7 +170,7 @@ public class StorageHelper extends SQLiteOpenHelper {
                 values,
                 "todo_id" + " = ?",
                 new String[] { String.valueOf(todo.todo_id) });
-    }*/
+    }
 
     public void deleteTodo(Todo todo) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -1,36 +1,90 @@
 <LinearLayout
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="#9ad8ce">
+
+
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:background="#9ad8ce"
+        android:padding="10dp"
+        android:weightSum="1"
+        android:baselineAligned="false">
+
+        <ImageView
+            android:layout_width="112dp"
+            android:layout_height="52dp"
+            android:id="@+id/imageView"
+            android:background="@drawable/name"
+            android:layout_weight="0.4" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/btn_garbage"
+            android:background="@drawable/garbage"
+            android:layout_marginRight="20dp"
+            android:clickable="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginLeft="105dp" />
 
         <EditText
-            android:layout_width="255dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editText" />
+            android:id="@+id/edSearch"
+            android:layout_weight="0.91"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/btn_search"
+            android:background="@drawable/search"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_vertical|right" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#ffffff"
+        android:padding="10dp"
+        android:weightSum="1">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_weight="1.05"
+            android:layout_marginRight="10dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ajouter"
-            android:id="@+id/ok_button" />
+            android:id="@+id/ok_button"
+            android:layout_marginRight="10dp" />
 
     </LinearLayout>
 
+
     <ListView
-        android:layout_width="351dp"
-        android:layout_height="377dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_gravity="center"
-        android:layout_weight="0.85" />
-
+        android:background="#FFF" />
 
 </LinearLayout>
