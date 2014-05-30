@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:weightSum="1"
-    android:background="#9ad8ce">
+    android:background="#fff">
 
 
 
@@ -18,11 +18,10 @@
         android:baselineAligned="false">
 
         <ImageView
-            android:layout_width="112dp"
+            android:layout_width="110dp"
             android:layout_height="52dp"
             android:id="@+id/imageView"
-            android:background="@drawable/name"
-            android:layout_weight="0.4" />
+            android:background="@drawable/name" />
 
         <ImageButton
             android:layout_width="30dp"
@@ -34,14 +33,17 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center_vertical|right"
-            android:layout_marginLeft="105dp" />
+            android:animateLayoutChanges="true"
+            android:visibility="visible"
+            android:layout_marginLeft="110dp" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:id="@+id/edSearch"
             android:layout_weight="0.91"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_marginLeft="50dp" />
 
         <ImageButton
             android:layout_width="30dp"
@@ -49,7 +51,8 @@
             android:id="@+id/btn_search"
             android:background="@drawable/search"
             android:layout_margin="10dp"
-            android:layout_gravity="center_vertical|right" />
+            android:layout_gravity="center_vertical|right"
+            android:layout_alignParentRight="true"/>
 
     </LinearLayout>
 

@@ -2,6 +2,7 @@ package tout.doux.app;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
+import com.crashlytics.android.Crashlytics;
 
 import java.util.List;
 
@@ -20,8 +22,10 @@ public class TodoAdapter extends BaseAdapter {
     Context context;
 
     public TodoAdapter(Context _context, List<Todo> _data) {
+
         context = _context;
         data    = _data;
+
     }
 
     @Override
@@ -54,6 +58,14 @@ public class TodoAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if(convertView == null) {
+            if(context == null){
+                Crashlytics.log(1,"context2","context est null");
+                Log.d("context2","context est null");
+            }else{
+                Crashlytics.log(1,"context2","context n'est pas null");
+                Log.d("context2","context n'est pas null");
+            }
+
             LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = vi.inflate(R.layout.todo_item, parent, false);
             holder = new ViewHolder();

@@ -53,6 +53,7 @@ public class StorageHelper extends SQLiteOpenHelper {
 
     public StorageHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
     }
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_UP_0);
@@ -173,9 +174,11 @@ public class StorageHelper extends SQLiteOpenHelper {
     }
 
     public void deleteTodo(Todo todo) {
+        Log.d("delete_BDD",todo.todo_id + " - "+todo.getTitle());
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("Todo", "todo_id" + " = ?",
                 new String[] { String.valueOf(todo.todo_id) });
         db.close();
     }
+
 }

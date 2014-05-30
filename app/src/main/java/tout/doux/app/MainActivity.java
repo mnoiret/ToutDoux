@@ -1,5 +1,7 @@
 package tout.doux.app;
 
+import android.animation.TimeInterpolator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -7,6 +9,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -16,9 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,15 +43,22 @@ import tout.doux.app.model.StorageHelper;
 import tout.doux.app.model.Todo;
 
 public class MainActivity extends Activity {
-    StorageHelper helper;
-    Todo t;
-    public TodoAdapter adapter;
+    public static StorageHelper helper;
     public static List<Todo> todoList;
+    public static TodoAdapter adapter;
+    static boolean Alphabetical = false;
+    Todo t;
 
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        helper = new StorageHelper(this);
+        todoList = helper.getAll();
+        adapter = new TodoAdapter(this,
+                todoList);
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
@@ -59,9 +72,8 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
+        
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.bar,menu );
         getMenuInflater().inflate(R.menu.sort, menu);
         return true;
     }
@@ -74,13 +86,16 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_sort) {
             //on utilise un comparator pour trier la liste
-            Collections.sort(todoList, new ComparatorByAlphabeticalOrder());
-
-            return true;
-        }else if(id == R.id.action_clear){
-
+            //Collections.sort(todoList, new ComparatorByAlphabeticalOrder());
+            Alphabetical = true;
+            reloadData();
             return true;
         }
+        /*else if(id == R.id.action_clear){
+            //on clear la liste
+            reloadData();
+            return true;
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -126,8 +141,8 @@ public class MainActivity extends Activity {
             AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
             t = (Todo) lv.getItemAtPosition(acmi.position);
 
-            menu.add("Edit");
-            menu.add("Suppr");
+            menu.add("Editer");
+            menu.add("Supprimer");
         }
     }
 
@@ -139,20 +154,21 @@ public class MainActivity extends Activity {
 
         try
         {
-            if(item.getTitle()=="Edit")
+            if(item.getTitle()=="Editer")
             {
-                // Use an EditText view to get user input.
+
                 final EditText input = new EditText(this);
                 input.setId(1);
                 input.setText(t.getTitle());
-                new AlertDialog.Builder(this).setTitle("Confirmer Suppression")
+                new AlertDialog.Builder(this).setTitle("Modification d'un élément")
                         .setView(input)
                         .setPositiveButton("Enregistrer", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                                 t.setTitle(input.getText().toString());
-                                //helper.updateTodo(t);
+                                helper.updateTodo(t);
+                                reloadData();
                             }
                         })
                         .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
@@ -160,18 +176,26 @@ public class MainActivity extends Activity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
                             }
-                        })
+                       })
                         .show();
-            }
-            else if(item.getTitle()=="Suppr")
+        }
+        else if(item.getTitle()=="Supprimer")
             {
-                new AlertDialog.Builder(this).setTitle("Modifier l'élément")
+                new AlertDialog.Builder(this).setTitle("Confirmer Suppression")
                         .setMessage("Etes-vous sur de vouloir supprimer cet élément ?")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                                //helper.deleteTodo(t);
+                                Log.d("delete_Menu",t.todo_id+" - "+t.getTitle());
+                                helper.deleteTodo(t);
+                                reloadData();
+                            }
+                        })
+                        .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
                             }
                         })
                         .show();
@@ -184,46 +208,56 @@ public class MainActivity extends Activity {
         {
             return true;
         }
+
+    }
+
+    public static void reloadData() {
+        todoList.clear();
+
+        if(Alphabetical==true)
+            todoList.addAll(helper.getAllAlphabetical());
+        else
+            todoList.addAll(helper.getAll());
+
+        adapter.notifyDataSetChanged();
+
     }
 
 
-
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
+/**
+         * A placeholder fragment containing a simple view.
+         */
     public static class PlaceholderFragment extends Fragment {
 
-        StorageHelper helper;
         ArrayList<String> dataList;
 
-
         EditText ed;
+        boolean search;
 
         public PlaceholderFragment() {
+
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                Bundle savedInstanceState) {
 
-
-            helper = new StorageHelper(this.getActivity());
+            final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             ed = (EditText) rootView.findViewById(R.id.editText);
             Button btn_add = (Button) rootView.findViewById(R.id.ok_button  );
+            final ImageButton btn_garbage = (ImageButton) rootView.findViewById(R.id.btn_garbage  );
+            ImageButton btn_search = (ImageButton) rootView.findViewById(R.id.btn_search  );
+            final EditText search_edit = (EditText) rootView.findViewById(R.id.edSearch);
+            search=false;
 
 
             final ListView listView = (ListView) rootView.findViewById(R.id.listView);
             final Activity act = this.getActivity();
 
-            todoList = helper.getAll();
+
             dataList = new ArrayList<String>();
 
-            final TodoAdapter adapter =
-                    new TodoAdapter(this.getActivity(),
-                            todoList);
             listView.setAdapter(adapter);
             registerForContextMenu(listView);
 
@@ -232,16 +266,13 @@ public class MainActivity extends Activity {
                 public void onClick(View v) {
                     String title = ed.getText().toString();
                     String content = "";
-                    Todo t = new Todo(title,content);
+                    Todo t = new Todo(title, content);
                     ArrayList<String> data = new ArrayList<String>();
                     data.add(title);
                     adapter.insert(t);
                     helper.addTodo(title, content);
-
                     reloadData();
-                    adapter.notifyDataSetChanged();
-
-
+                    ed.setText("");
                 }
             });
 
@@ -250,31 +281,52 @@ public class MainActivity extends Activity {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int index,
                                         long arg3) {
-                    Todo t = (Todo)listView.getAdapter().getItem(index);
+                    Todo t = (Todo) listView.getAdapter().getItem(index);
                     TextView tv = (TextView) arg1.findViewById(R.id.todoItemTitle);
-                    if(t.isDone()==true){
+                    if (t.isDone() == true) {
                         t.setDone(false);
-                        tv.setTextColor(Color.BLACK);
-                    }
-                    else{
+                        tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    } else {
                         t.setDone(true);
-                        tv.setTextColor(Color.RED);
-                        //tv.setPaintFlags();
+                        tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    }
+                }
+            });
+
+
+            btn_search.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("blob","search : "+search);
+                    if(search==true){
+                        search=false;
+
+                        /*Vérifier le champs texte
+                        * Faire la requete recherche
+                        * Afficher les résultats dans une nouvelle Activité
+                        */
+
+                        btn_garbage.setVisibility(View.VISIBLE);
+                        search_edit.setVisibility(View.GONE);
+                    }else{
+                        search=true;
+                        btn_garbage.setVisibility(View.GONE);
+                        search_edit.setVisibility(View.VISIBLE);
                     }
 
+
+
+                   /* btn_garbage.setVisibility(View.GONE);
+                    search_edit.setVisibility(View.VISIBLE);
+                    if (search_edit.getText().toString()==""){
+                        search_edit.setText("test");
+                    }*/
                 }
-
-
             });
 
 
             return rootView;
         }
 
-        public void reloadData() {
-
-            todoList = helper.getAll();
-            ed.setText("");
-        }
     }
 }
