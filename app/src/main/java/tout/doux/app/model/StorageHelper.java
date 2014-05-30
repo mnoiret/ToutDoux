@@ -159,4 +159,13 @@ public class StorageHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(todo.todo_id) });
         db.close();
     }
+
+    public void updateTodo(Todo todo){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("content", todo.content);
+        values.put("title", todo.title);
+        db.update("Todo",values,"todo_id"+"= ?",new String[] { String.valueOf(todo.todo_id) });
+        db.close();
+    }
 }

@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
         if (id == R.id.action_sort) {
             //on utilise un comparator pour trier la liste
             Collections.sort(todoList, new ComparatorByAlphabeticalOrder());
-
+            reloadData();
             return true;
         }else if(id == R.id.action_clear){
             //on clear la liste
@@ -147,23 +147,9 @@ public class MainActivity extends Activity {
         {
             if(item.getTitle()=="Edit")
             {
-                new AlertDialog.Builder(this).setTitle("Confirmer Suppression")
-                        .setMessage("Etes-vous sur de vouloir supprimer cet élément ?")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                                //helper.deleteTodo(t);
-                                reloadData();
-                            }
-                        })
-                        .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                       })
-                        .show();
+
+
+               reloadData();
             }
             else if(item.getTitle()=="Suppr")
             {
