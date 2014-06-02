@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -244,11 +245,13 @@ public class MainActivity extends Activity {
 
             final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+
             ed = (EditText) rootView.findViewById(R.id.editText);
             Button btn_add = (Button) rootView.findViewById(R.id.ok_button  );
             final ImageButton btn_garbage = (ImageButton) rootView.findViewById(R.id.btn_garbage  );
             ImageButton btn_search = (ImageButton) rootView.findViewById(R.id.btn_search  );
             final EditText search_edit = (EditText) rootView.findViewById(R.id.edSearch);
+            final ImageButton resetSearch = (ImageButton) rootView.findViewById(R.id.button);
             search=false;
 
 
@@ -293,34 +296,60 @@ public class MainActivity extends Activity {
                 }
             });
 
+            resetSearch.setOnClickListener(new Button.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    if(search == true){
+                        search=false;
+                        search_edit.setText("");
+                        btn_garbage.setVisibility(View.VISIBLE);
+                        search_edit.setVisibility(View.GONE);
+                        resetSearch.setVisibility(View.GONE);
+                        reloadData();
+                    }
+                }
+            });
+
 
             btn_search.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("blob","search : "+search);
                     if(search==true){
-                        search=false;
+                        if(search_edit.getText().toString().matches("")){
+                            search=false;
+                            search_edit.setText("");
+                            btn_garbage.setVisibility(View.VISIBLE);
+                            search_edit.setVisibility(View.GONE);
+                            resetSearch.setVisibility(View.GONE);
+                        }
+                        else{
+                            List<Todo> resSearch;
+                            resSearch = helper.searchTodo(search_edit.getText().toString());
 
-                        /*Vérifier le champs texte
-                        * Faire la requete recherche
-                        * Afficher les résultats dans une nouvelle Activité
-                        */
+                            todoList.clear();
+                            todoList.addAll(resSearch);
+                            adapter.notifyDataSetChanged();
+                        }
 
-                        btn_garbage.setVisibility(View.VISIBLE);
-                        search_edit.setVisibility(View.GONE);
+
                     }else{
                         search=true;
+                        search_edit.setText("");
                         btn_garbage.setVisibility(View.GONE);
                         search_edit.setVisibility(View.VISIBLE);
+                        resetSearch.setVisibility(View.VISIBLE);
                     }
+                }
+            });
 
 
+            btn_garbage.setOnClickListener(new Button.OnClickListener() {
 
-                   /* btn_garbage.setVisibility(View.GONE);
-                    search_edit.setVisibility(View.VISIBLE);
-                    if (search_edit.getText().toString()==""){
-                        search_edit.setText("test");
-                    }*/
+                @Override
+                public void onClick(View view) {
+                    todoList.clear();
+                    helper.deleteAllTodo();
+                    reloadData();
                 }
             });
 

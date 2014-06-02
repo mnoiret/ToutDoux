@@ -17,6 +17,15 @@
         android:weightSum="1"
         android:baselineAligned="false">
 
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/button"
+            android:background="@drawable/back"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone" />
+
         <ImageView
             android:layout_width="110dp"
             android:layout_height="52dp"
@@ -35,7 +44,7 @@
             android:layout_gravity="center_vertical|right"
             android:animateLayoutChanges="true"
             android:visibility="visible"
-            android:layout_marginLeft="110dp" />
+            android:layout_marginLeft="122dp" />
 
         <EditText
             android:layout_width="50dp"
@@ -88,6 +97,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_gravity="center"
-        android:background="#FFF" />
+        android:background="#FFF"
+        android:layout_margin="10dp" />
 
 </LinearLayout>

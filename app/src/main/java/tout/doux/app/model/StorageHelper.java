@@ -181,4 +181,29 @@ public class StorageHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteAllTodo() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("Todo", null, null);
+        db.close();
+    }
+
+    public List<Todo> searchTodo(String chaine) {
+        List<Todo> todoList = new ArrayList<Todo>();
+        String selectQuery = "SELECT  * FROM Todo WHERE title LIKE '%"+chaine+"%'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Todo todo = new Todo(Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1), cursor.getString(2),Boolean.parseBoolean(cursor.getString(3)));
+
+                todoList.add(todo);
+            } while (cursor.moveToNext());
+        }
+
+        return todoList;
+    }
+
 }
